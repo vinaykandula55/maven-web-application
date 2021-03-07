@@ -1,62 +1,51 @@
 pipeline{
 
-agent any
+agent any;
 
-tools
-{
-  maven 'maven3.6.3'
+tools{
 
-}
+maven 'maven3.6.3'
 
-triggers{
- pollSCM('* * * * *')
 }
 
 options{
-    timestamps()
-    buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '2'))
+timestamps()
+
 }
 
- stages{
-   
-   stage('CheckoutCode')
-   {
-     steps{
-	 git branch: 'development', credentialsId: '8e348aa2-9531-4dbe-863d-1adb64897470', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
+stages{
+
+    stage('CheckOutCode'){
+	 steps{
+	   git branch: 'development', credentialsId: '200c5f49-bba6-49b5-adde-b9c181fe0b39', url: 'https://github.com/nag003/maven-web-application.git'
 	 }
-   }
-   
-   stage('Build')
-   {
-    steps{
+	}
+	
+	stage('Build'){
+	  steps{
 	  sh "mvn clean package"
-	 }
-   }
+	  }
+	}
    
-    stage('ExecuteSonarQubeReport')
-   {
-     steps{
-	  sh "mvn sonar:sonar"
-	 }
-   }
-   
-   stage('UploadArtifactintoNexus')
-   {
-     steps{
-	  sh "mvn deploy"
-	 }
-   }
-   
-  stage('DeployAppIntoTomcat')
- {
-   steps{
-  sshagent(['2b7b0c6a-5eff-4f4a-82c3-3630f91c70b5']) {
-  sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@3.1.222.74:/opt/apache-tomcat-9.0.41/webapps/"
-  }
- }
- }
- 
-  
+   stage('ExecuteSonarQubeReport'){
+	steps{
+	sh "mvn sonar:sonar"
+	}
+	}
+	
+	stage('UploadArtifactsIntoNexus'){
+	steps{
+	sh "mvn deploy"
+	}
+	}
+	
+	stage('DeployAppIntoTomcatServer'){
+	steps{
+	sshagent(['5de14d08-6490-449c-ba54-ba639281f4f1']) {
+	 sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@54.179.86.43:/opt/apache-tomcat-9.0.41/webapps/"
+	}
+	}
+	}
  
  }
  
@@ -64,19 +53,19 @@ options{
  
  
  success{
- mail bcc: 'devopstrainingblr@gmail.com', body: '''BuildOver!....
+ mail bcc: 'nagarjunapavan007@gmail.com', body: '''BuildOver!....
 
  Regards,
- Mithun Technologies,
- 9980923226''', cc: 'devopstrainingblr@gmail.com', from: '', replyTo: '', subject: 'BuildOver!!', to: 'devopstrainingblr@gmail.com'
+ Arj Technologies,
+ 9603372130''', cc: 'nagarjunapavan007@gmail.com', from: '', replyTo: '', subject: 'BuildOver!!', to: 'nagarjunapavan007@gmail.com'
  }
  
  failure{
- mail bcc: 'devopstrainingblr@gmail.com', body: '''BuildOver!....
+ mail bcc: 'nagarjunapavan007@gmail.com', body: '''BuildOver!....
 
  Regards,
- Mithun Technologies,
- 9980923226''', cc: 'devopstrainingblr@gmail.com', from: '', replyTo: '', subject: 'BuildOver!!', to: 'devopstrainingblr@gmail.com'
+ Arj Technologies,
+ 9603372130''', cc: 'nagarjunapavan007@gmail.com', from: '', replyTo: '', subject: 'BuildOver!!', to: 'nagarjunapavan007@gmail.com'
  }
  
  }
