@@ -32,14 +32,4 @@ sshagent(['5de14d08-6490-449c-ba54-ba639281f4f1'])sh "scp -o StrictHostKeyChecki
 }
 }
 
-*/
-stage('SendEmailNotification')
-{
-emailext body: '''Build Over!..
-
-Regards,
-ARJ Technologies,
-subject: 'Build Over...', to: 'nagarjunapavan007@gmail.com'
-}
-*/
 }
